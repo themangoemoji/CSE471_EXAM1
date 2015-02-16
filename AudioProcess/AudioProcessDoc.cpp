@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CAudioProcessDoc, CDocument)
 	ON_COMMAND(ID_PROCESS_DOUBLESPEED, &CAudioProcessDoc::OnProcessDoublespeed)
 	ON_COMMAND(ID_PROCESS_BACKWARDS, &CAudioProcessDoc::OnProcessBackwards)
 
+	ON_COMMAND(ID_EXAM_B3, &CAudioProcessDoc::OnExamB3)
 END_MESSAGE_MAP()
 
 
@@ -595,3 +596,36 @@ void CAudioProcessDoc::OnProcessBackwards()
 
 
 
+
+
+void CAudioProcessDoc::OnExamB3()
+{
+	// Call to open the processing output
+	if (!ProcessBegin())
+		return;
+
+	short audio[2];
+	short *waveTable = new short[SampleFrames() + 1];
+
+	for (int i = 0; i<SampleFrames(); i++)
+	{
+		ProcessReadFrame(audio);
+		waveTable[i] = audio[0];
+
+	}
+	for (int i = 0; i < SampleFrames(); i++)
+	{
+
+
+		audio[0] = short(waveTable[i] * m_amplitude);
+		audio[1] = short(waveTable[i] * m_amplitude);
+		ProcessWriteFrame(audio);
+		// The progress control
+		if (!ProcessProgress(double(SampleFrames() - i) / SampleFrames()))
+			break;
+
+	}
+	delete(waveTable);
+	// Call to close the generator output
+	ProcessEnd();
+}

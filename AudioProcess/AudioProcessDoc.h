@@ -92,4 +92,5 @@ public:
 	afx_msg void OnProcessDoublespeed();
 	afx_msg void OnProcessBackwards();
 	
+	afx_msg void OnExamB3();
 };
