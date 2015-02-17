@@ -35,14 +35,15 @@ BEGIN_MESSAGE_MAP(CAudioGenerateDoc, CDocument)
 	ON_COMMAND(ID_HARMONICS_ALL, &CAudioGenerateDoc::OnHarmonicsAll)
 	ON_COMMAND(ID_HARMONICS_ODD, &CAudioGenerateDoc::OnHarmonicsOdd)
 	ON_COMMAND(ID_HARMONICS_EVEN, &CAudioGenerateDoc::OnHarmonicsEven)
-	ON_COMMAND(ID_EXAM_A1, &CAudioGenerateDoc::OnExamA1)
-	ON_COMMAND(ID_EXAM_A2, &CAudioGenerateDoc::OnExamA2)
-	ON_COMMAND(ID_EXAM_A3, &CAudioGenerateDoc::OnExamA3)
-	ON_COMMAND(ID_EXAM_A4, &CAudioGenerateDoc::OnExamA4)
-	ON_COMMAND(ID_EXAM_A5, &CAudioGenerateDoc::OnExamA5)
-	ON_COMMAND(ID_EXAM_A6, &CAudioGenerateDoc::OnExamA6)
-	ON_COMMAND(ID_EXAM_A7, &CAudioGenerateDoc::OnExamA7)
-	ON_COMMAND(ID_EXAM_A8, &CAudioGenerateDoc::OnExamA8)
+
+	ON_COMMAND(ID_EXAM_A9, &CAudioGenerateDoc::OnExamA9)
+	ON_COMMAND(ID_EXAM_A10, &CAudioGenerateDoc::OnExamA10)
+	ON_COMMAND(ID_EXAM_A11, &CAudioGenerateDoc::OnExamA11)
+	ON_COMMAND(ID_EXAM_A12, &CAudioGenerateDoc::OnExamA12)
+	ON_COMMAND(ID_EXAM_A13, &CAudioGenerateDoc::OnExamA13)
+	ON_COMMAND(ID_EXAM_A14, &CAudioGenerateDoc::OnExamA14)
+	ON_COMMAND(ID_EXAM_A15, &CAudioGenerateDoc::OnExamA15)
+	ON_COMMAND(ID_EXAM_A16, &CAudioGenerateDoc::OnExamA16)
 END_MESSAGE_MAP()
 
 
@@ -531,66 +532,8 @@ void CAudioGenerateDoc::OnHarmonicsEven()
 }
 
 
-void CAudioGenerateDoc::OnExamA1()
-{
-	// Call to open the generator output
-	if (!GenerateBegin())
-		return;
-	double freq = 622.25;
-	short audio[2];
-	double num_harmonics = m_sampleRate / (2 * freq);
-	double totalharmonic = 34;
-	double totaltimeplayin5sec = 220502;
-	int temp = 1;
-	int count = 0;
 
-
-
-	for (double time = 0.; time < m_duration; time += 1. / m_sampleRate)
-	{
-		if (time <= 5)
-		{
-			if (count >= totaltimeplayin5sec / totalharmonic)
-			{
-				temp = temp + 1;
-				count = 0;
-			}
-
-			audio[0] = short(m_amplitude * sin(time * 2 * M_PI * freq));
-			audio[1] = short(m_amplitude * sin(time * 2 * M_PI * freq));
-
-			for (int i = 2; i <= temp; i++)
-			{
-				audio[0] += short(m_amplitude / i * sin(time * 2 * M_PI * freq * i));
-				audio[1] += short(m_amplitude / i * sin(time * 2 * M_PI * freq * i));
-			}
-			count++;
-
-		}
-
-		else
-		{
-			long sample = 0;
-			for (int i = 1; i < num_harmonics; i = i++)
-			{
-				sample = sample + short((m_amplitude / i) * sin(time * 2 * M_PI * (i*freq)));
-			}
-			audio[0] = short(sample);
-			audio[1] = short(sample);
-		}
-		GenerateWriteFrame(audio);
-
-		// The progress control
-		if (!GenerateProgress(time / m_duration))
-			break;
-	}
-	// Call to close the generator output
-	GenerateEnd();
-
-}
-
-
-void CAudioGenerateDoc::OnExamA2()
+void CAudioGenerateDoc::OnExamA9()
 {
 	// Call to open the generator output
 	if (!GenerateBegin())
@@ -645,7 +588,7 @@ void CAudioGenerateDoc::OnExamA2()
 }
 
 
-void CAudioGenerateDoc::OnExamA3()
+void CAudioGenerateDoc::OnExamA10()
 {
 	// Call to open the generator output
 	if (!GenerateBegin())
@@ -725,7 +668,7 @@ void CAudioGenerateDoc::OnExamA3()
 }
 
 
-void CAudioGenerateDoc::OnExamA4()
+void CAudioGenerateDoc::OnExamA11()
 {
 	if (!GenerateBegin())
 		return;
@@ -760,7 +703,7 @@ void CAudioGenerateDoc::OnExamA4()
 }
 
 
-void CAudioGenerateDoc::OnExamA5()
+void CAudioGenerateDoc::OnExamA12()
 {
 	// TODO: Add your command handler code here
 	// Call to open the generator output
@@ -811,7 +754,7 @@ void CAudioGenerateDoc::OnExamA5()
 }
 
 
-void CAudioGenerateDoc::OnExamA6()
+void CAudioGenerateDoc::OnExamA13()
 {
 	// TODO: Add your command handler code here
 	if (!GenerateBegin())
@@ -857,7 +800,7 @@ void CAudioGenerateDoc::OnExamA6()
 }
 
 
-void CAudioGenerateDoc::OnExamA7()
+void CAudioGenerateDoc::OnExamA14()
 {
 
 
@@ -903,7 +846,7 @@ void CAudioGenerateDoc::OnExamA7()
 }
 
 
-void CAudioGenerateDoc::OnExamA8()
+void CAudioGenerateDoc::OnExamA15()
 {
 
 	std::vector<short>	wavetable;
@@ -945,3 +888,62 @@ void CAudioGenerateDoc::OnExamA8()
 	}
 	GenerateEnd();
 }
+
+
+void CAudioGenerateDoc::OnExamA16()
+{
+	// Call to open the generator output
+	if (!GenerateBegin())
+		return;
+	double freq = 622.25;
+	short audio[2];
+	double num_harmonics = m_sampleRate / (2 * freq);
+	double totalharmonic = 34;
+	double totaltimeplayin5sec = 220502;
+	int temp = 1;
+	int count = 0;
+
+
+
+	for (double time = 0.; time < m_duration; time += 1. / m_sampleRate)
+	{
+		if (time <= 5)
+		{
+			if (count >= totaltimeplayin5sec / totalharmonic)
+			{
+				temp = temp + 1;
+				count = 0;
+			}
+
+			audio[0] = short(m_amplitude * sin(time * 2 * M_PI * freq));
+			audio[1] = short(m_amplitude * sin(time * 2 * M_PI * freq));
+
+			for (int i = 2; i <= temp; i++)
+			{
+				audio[0] += short(m_amplitude / i * sin(time * 2 * M_PI * freq * i));
+				audio[1] += short(m_amplitude / i * sin(time * 2 * M_PI * freq * i));
+			}
+			count++;
+
+		}
+
+		else
+		{
+			long sample = 0;
+			for (int i = 1; i < num_harmonics; i = i++)
+			{
+				sample = sample + short((m_amplitude / i) * sin(time * 2 * M_PI * (i*freq)));
+			}
+			audio[0] = short(sample);
+			audio[1] = short(sample);
+		}
+		GenerateWriteFrame(audio);
+
+		// The progress control
+		if (!GenerateProgress(time / m_duration))
+			break;
+	}
+	// Call to close the generator output
+	GenerateEnd();
+}
+

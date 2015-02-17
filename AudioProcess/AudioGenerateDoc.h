@@ -98,4 +98,12 @@ public:
 	afx_msg void OnExamA6();
 	afx_msg void OnExamA7();
 	afx_msg void OnExamA8();
+	afx_msg void OnExamA9();
+	afx_msg void OnExamA10();
+	afx_msg void OnExamA11();
+	afx_msg void OnExamA12();
+	afx_msg void OnExamA13();
+	afx_msg void OnExamA14();
+	afx_msg void OnExamA15();
+	afx_msg void OnExamA16();
 };
