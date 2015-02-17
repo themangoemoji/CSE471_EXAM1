@@ -34,7 +34,6 @@ BEGIN_MESSAGE_MAP(CAudioGenerateView, CView)
 	ON_WM_CREATE()
 	ON_WM_MOVE()
 	ON_WM_SIZE()
-	ON_COMMAND(ID_EXAM_A6, &CAudioGenerateView::OnExamA6)
 END_MESSAGE_MAP()
 
 // CAudioGenerateView construction/destruction
