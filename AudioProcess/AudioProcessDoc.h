@@ -93,4 +93,7 @@ public:
 	afx_msg void OnProcessBackwards();
 	
 	afx_msg void OnExamB3();
+	afx_msg void OnExamB4();
+	afx_msg void OnExamB1();
+	afx_msg void OnExamB2();
 };

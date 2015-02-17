@@ -90,4 +90,12 @@ public:
 	afx_msg void OnHarmonicsAll();
 	afx_msg void OnHarmonicsOdd();
 	afx_msg void OnHarmonicsEven();
+	afx_msg void OnExamA1();
+	afx_msg void OnExamA2();
+	afx_msg void OnExamA3();
+	afx_msg void OnExamA4();
+	afx_msg void OnExamA5();
+	afx_msg void OnExamA6();
+	afx_msg void OnExamA7();
+	afx_msg void OnExamA8();
 };

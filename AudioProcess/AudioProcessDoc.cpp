@@ -72,6 +72,9 @@ BEGIN_MESSAGE_MAP(CAudioProcessDoc, CDocument)
 	ON_COMMAND(ID_PROCESS_BACKWARDS, &CAudioProcessDoc::OnProcessBackwards)
 
 	ON_COMMAND(ID_EXAM_B3, &CAudioProcessDoc::OnExamB3)
+	ON_COMMAND(ID_EXAM_B4, &CAudioProcessDoc::OnExamB4)
+	ON_COMMAND(ID_EXAM_B1, &CAudioProcessDoc::OnExamB1)
+	ON_COMMAND(ID_EXAM_B2, &CAudioProcessDoc::OnExamB2)
 END_MESSAGE_MAP()
 
 
@@ -605,27 +608,157 @@ void CAudioProcessDoc::OnExamB3()
 		return;
 
 	short audio[2];
-	short *waveTable = new short[SampleFrames() + 1];
+	short prev_sample = 0;
+	double rate = 0.0;
+	double sample = 0.0;
+	double time = 0.0;
+	int i = 0;
+	vector<short> wavetable;
+	for (int j = 0; j<SampleFrames(); j++){
+		ProcessReadFrame(audio);
+		wavetable.push_back(audio[0]);
+	}
 
-	for (int i = 0; i<SampleFrames(); i++)
+	while (i<SampleFrames())
+	{
+		rate = (1 + 0.1 * cos(M_PI * (time / (SampleFrames() / SampleRate()))));
+		//rate = 1 + 0.1*sin(2 * M_PI * 3 * time);
+		sample += rate;
+		audio[0] = wavetable[i];
+		ProcessWriteFrame(audio);
+		i = int(sample + 0.5);
+		time += 1. / SampleRate();
+		// The progress control
+		if (!ProcessProgress(double(i) / SampleFrames()))
+			break;
+	}
+
+	// Call to close the generator output
+	ProcessEnd();
+}
+
+
+void CAudioProcessDoc::OnExamB4()
+{
+	// Call to open the processing output
+	if (!ProcessBegin())
+		return;
+
+	short audio[2];
+	short prev_sample = 0;
+	double rate = 0.0;
+	double sample = 0.0;
+	double time = 0.0;
+	int i = 0;
+	vector<short> wavetable;
+	for (int j = 0; j<SampleFrames(); j++){
+		ProcessReadFrame(audio);
+		wavetable.push_back(audio[0]);
+	}
+
+	while (i<SampleFrames())
+	{
+		rate = 1 + 0.1*sin(2 * M_PI * 3 * time);
+		sample += rate;
+		audio[0] = wavetable[i];
+		ProcessWriteFrame(audio);
+		i = int(sample + 0.5);
+		time += 1. / SampleRate();
+		// The progress control
+		if (!ProcessProgress(double(i) / SampleFrames()))
+			break;
+	}
+
+	// Call to close the generator output
+	ProcessEnd();
+}
+
+
+void CAudioProcessDoc::OnExamB1()
+{
+	// Call to open the processing output
+	if (!ProcessBegin())
+		return;
+
+	short audio[2];
+
+	const int QUEUESIZE = 200000;
+	const double DELAY = 1.0;
+
+	std::vector<short> queue;
+	queue.resize(QUEUESIZE);
+
+	int wrloc = 0;
+
+	double time = 0;
+
+	for (int i = 0; i<SampleFrames(); i++, time += 1. / SampleRate())
 	{
 		ProcessReadFrame(audio);
-		waveTable[i] = audio[0];
 
-	}
-	for (int i = 0; i < SampleFrames(); i++)
-	{
+		wrloc = (wrloc + 2) % QUEUESIZE;
+		queue[wrloc] = audio[0];
+		queue[wrloc + 1] = audio[1];
 
+		int delaylength = int((0.006 + sin(0.25 * 2 * M_PI * time) * 0.004 * SampleRate() + 0.5)) * 2;  //**/// this line ----!
+		int rdloc = (wrloc + QUEUESIZE - delaylength) % QUEUESIZE;
 
-		audio[0] = short(waveTable[i] * m_amplitude);
-		audio[1] = short(waveTable[i] * m_amplitude);
+		audio[0] = audio[0] / 2 + queue[rdloc++] / 2;
+		audio[1] = audio[1] / 2 + queue[rdloc] / 2;
+
 		ProcessWriteFrame(audio);
-		// The progress control
-		if (!ProcessProgress(double(SampleFrames() - i) / SampleFrames()))
-			break;
 
+		// The progress control
+		if (!ProcessProgress(double(i) / SampleFrames()))
+			break;
 	}
-	delete(waveTable);
+
+
+	// Call to close the generator output
+	ProcessEnd();
+}
+
+
+void CAudioProcessDoc::OnExamB2()
+{
+	// Call to open the processing output
+	if (!ProcessBegin())
+		return;
+
+	short audio[2];
+
+	const int QUEUESIZE = 200000;
+	const double DELAY = 1.0;
+
+	std::vector<short> queue;
+	queue.resize(QUEUESIZE);
+
+	int wrloc = 0;
+
+	double time = 0;
+
+	for (int i = 0; i<SampleFrames(); i++, time += 1. / SampleRate())
+	{
+		ProcessReadFrame(audio);
+
+		wrloc = (wrloc + 2) % QUEUESIZE;
+		queue[wrloc] = audio[0];
+		queue[wrloc + 1] = audio[1];
+
+		int delaylength = int((0.025 + sin(0.25 * 2 * M_PI * time) * 0.005 * SampleRate() + 0.5)) * 2; /// this line--------!
+		int rdloc = (wrloc + QUEUESIZE - delaylength) % QUEUESIZE;
+
+		audio[0] = audio[0] / 2 + queue[rdloc++] / 2;
+		audio[1] = audio[1] / 2 + queue[rdloc] / 2;
+
+		ProcessWriteFrame(audio);
+
+		// The progress control
+		if (!ProcessProgress(double(i) / SampleFrames()))
+			break;
+	}
+
+
 	// Call to close the generator output
 	ProcessEnd();
 }

@@ -52,6 +52,7 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnMove(int x, int y);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnExamA6();
 };
 
 #ifndef _DEBUG  // debug version in AudioGenerateView.cpp
